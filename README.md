@@ -35,7 +35,7 @@ Everything else just wraps around that one move.
 
 - **React** and **Python** are *our code*.
 - **LaTeX** is a large third-party program (`pdflatex`) that must be physically installed.
-- **Docker** only appears in **deployment** — it guarantees LaTeX ships with the backend.
+- **Docker** only appears in **deployment**  it guarantees LaTeX ships with the backend.
 
 ---
 
@@ -60,7 +60,7 @@ a **Docker box** so LaTeX always comes along.
 ```
 ┌──────────────────────────── USER'S BROWSER ─────────────────────────────┐
 │                                                                          │
-│   REACT FRONTEND   (hosted on Vercel / Netlify — free)                   │
+│   REACT FRONTEND   (hosted on Vercel / Netlify  free)                   │
 │   ┌──────────────────────┐        ┌──────────────────────┐              │
 │   │  Code editor          │        │   PDF preview         │             │
 │   │  \textbf{Tanishq}     │        │   [ rendered resume ] │             │
@@ -70,7 +70,7 @@ a **Docker box** so LaTeX always comes along.
 └──────────────┼──────────────────────────────┼────────────────────────────┘
                │  HTTPS: sends LaTeX code      │  HTTPS: sends PDF back
                ▼                               │
-┌────────── DOCKER BOX (the food truck) — hosted on Render / Railway ───────┐
+┌────────── DOCKER BOX (the food truck)  hosted on Render / Railway ───────┐
 │                                                                          │
 │   PYTHON BACKEND (the waiter)                                            │
 │     1. receives the LaTeX code                                          │
@@ -88,7 +88,7 @@ a **Docker box** so LaTeX always comes along.
 ```
 
 **Why Docker here:** a fresh host arrives *blank* (Python only, no LaTeX). Some hosts
-block installing big software. Docker removes all guesswork — LaTeX is baked into the box,
+block installing big software. Docker removes all guesswork  LaTeX is baked into the box,
 so it runs identically on my Mac, a free host, or a paid server.
 
 ---
@@ -105,17 +105,17 @@ so it runs identically on my Mac, a free host, or a paid server.
 7. React  → shows the PDF and lets the user download it.
 ```
 
-Identical 7 steps in development and production — only the *homes* change, and in
+Identical 7 steps in development and production  only the *homes* change, and in
 production LaTeX lives inside the Docker box instead of directly on the machine.
 
 ---
 
-## 6. LaTeX setup — kept consistent dev ↔ prod 🔑
+## 6. LaTeX setup  kept consistent dev ↔ prod 🔑
 
 We deliberately avoid full MacTeX (~4–5 GB). Instead: a lean **~1 GB** setup that still
 compiles real resumes (icons, fancy fonts) with **no missing-package errors**.
 
-A **"collection"** is a parent bundle containing hundreds of related packages — install
+A **"collection"** is a parent bundle containing hundreds of related packages  install
 the parent once instead of naming each package.
 
 | Bundle                        | What it gives                                              | Size        |
@@ -141,32 +141,46 @@ the parent once instead of naming each package.
 resume_builder/
 ├── frontend/                 ← React (editor + preview UI)        [to be built]
 │
-├── backend/                  ← Python                              [to be built]
-│   ├── app.py                ← the waiter (receives code, runs LaTeX)
-│   └── requirements.txt      ← Python dependencies
+├── backend/                  ← Python (FastAPI)                    ✅ BUILT
+│   ├── app/
+│   │   ├── main.py           ← app entry: CORS + wires routers
+│   │   ├── core/config.py    ← settings (pdflatex path, timeout, limits)
+│   │   ├── api/routes/       ← health.py (GET /) + compile.py (POST /compile)
+│   │   ├── models/           ← request/response schemas (Pydantic)
+│   │   ├── services/         ← latex_service.py — the heart (code → PDF)
+│   │   └── utils/            ← files.py + errors.py (reusable helpers)
+│   ├── tests/
+│   ├── requirements.txt      ← fastapi, uvicorn, pydantic-settings (pinned)
+│   ├── .env.example          ← documents every env var
+│   └── .gitignore
 │
 ├── Dockerfile                ← deployment recipe (installs LaTeX)  [Phase 2]
 │
 ├── README.md                 ← this file (project + deployment architecture)
+├── BACKEND.md                ← backend architecture & rules (read before editing backend)
 ├── DEVELOPMENT.md            ← build & run on my Mac (no Docker)
 └── DEPLOYMENT.md             ← put it online (adds Docker)
 ```
+
+> The backend is built as a clean **layered FastAPI** app (thin routes → services →
+> utils). See **[BACKEND.md](BACKEND.md)** for the full architecture and the rules to
+> follow when extending it.
 
 ---
 
 ## 8. Build & deploy roadmap
 
 ```
-Phase 1 — DEVELOPMENT.md   Mac + LaTeX + Python + React        → build & test, no Docker
-Phase 2 — DEPLOYMENT.md    Wrap backend in Docker              → test the box locally
-Phase 3 — Deploy           React → Vercel,  Docker box → Render
+Phase 1  DEVELOPMENT.md   Mac + LaTeX + Python + React        → build & test, no Docker
+Phase 2  DEPLOYMENT.md    Wrap backend in Docker              → test the box locally
+Phase 3  Deploy           React → Vercel,  Docker box → Render
 After that                 Every update → push to GitHub       → auto-redeploys ✨
 ```
 
 Recommended build order within Phase 1:
-1. **Backend first** — Python + LaTeX producing a PDF from sample code.
-2. **Frontend** — React editor + PDF preview + download button.
-3. **Connect them** — React sends code to Python, shows the PDF back.
+1. ✅ **Backend first** — Python + LaTeX producing a PDF (FastAPI `/compile`, tested).
+2. ⬜ **Frontend** — React editor + PDF preview + download button.
+3. ⬜ **Connect them** — React sends code to Python, shows the PDF back.
 
 ---
 
@@ -176,10 +190,10 @@ Recommended build order within Phase 1:
 |------------------------------|--------------------------------|-------------------|
 | Frontend (React)             | Vercel / Netlify               | Free              |
 | Backend (Python + LaTeX)     | Render / Railway / Fly free tier | $0 to start     |
-| Docker (the tool)            | —                              | Free, always      |
+| Docker (the tool)            |                               | Free, always      |
 | Scaling beyond free limits   | Cheap VPS (Hetzner/DO)         | ~$4–6/month       |
 
-**Docker itself is free.** The only thing that might cost money is the host — and that has
+**Docker itself is free.** The only thing that might cost money is the host  and that has
 free tiers. To start: **frontend free + backend free tier = $0.**
 
 ---

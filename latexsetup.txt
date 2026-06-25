@@ -1,0 +1,34 @@
+Here are the Step 1 commands. Run them in your Terminal (the Mac Terminal app), one block at a time.
+
+1. Install BasicTeX (~100 MB)
+
+brew install --cask basictex
+This will ask for your Mac password (it installs system-wide). Wait for it to finish.
+
+2. Reload your PATH so the new commands are found
+
+eval "$(/usr/libexec/path_helper)"
+Then close and reopen Terminal to be safe — that guarantees pdflatex and tlmgr are visible.
+
+3. Update the package manager
+
+sudo tlmgr update --self
+Asks for your password again.
+
+4. Install the 3 collections (~900 MB — this is the long one)
+
+sudo tlmgr install collection-latexextra collection-fontsrecommended collection-fontsextra
+This downloads ~900 MB, so it'll take a few minutes depending on your internet. Let it run.
+
+5. Verify it worked
+
+pdflatex --version
+If you see something like pdfTeX 3.141592653..., the chef is installed. ✅
+
+What to expect
+Password prompts on steps 1, 3, 4 (the sudo ones). Type your Mac login password — it won't show characters as you type, that's normal.
+Step 4 is the slow one (~900 MB download). Totally fine to let it sit.
+If step 5 says pdflatex: command not found, just close and reopen Terminal and try again (PATH not reloaded yet).
+Go ahead and run them. When step 5 shows a version, tell me — paste the output if you hit any error — and we'll move to Step 2 (Python environment).
+
+ Remember main thing is that once it is deployed to Dock, we will have to delete it from the system also
