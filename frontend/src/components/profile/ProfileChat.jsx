@@ -22,10 +22,18 @@ export default function ProfileChat({ profile, onApply }) {
   const [pending, setPending] = useState(null) // proposed { changes } awaiting approval
   const [remaining, setRemaining] = useState(null)
   const [error, setError] = useState('')
-  const endRef = useRef(null)
+  const scrollRef = useRef(null)
+  const firstRender = useRef(true)
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: 'smooth' })
+    // Skip the initial mount so entering the page doesn't jump.
+    if (firstRender.current) {
+      firstRender.current = false
+      return
+    }
+    // Scroll only the chat's own container — not the whole page.
+    const el = scrollRef.current
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
   }, [messages, pending])
 
   async function send() {
@@ -77,7 +85,7 @@ export default function ProfileChat({ profile, onApply }) {
         )}
       </div>
 
-      <div className="flex-1 space-y-3 overflow-y-auto p-4">
+      <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto p-4">
         {messages.map((m, i) => (
           <Bubble key={i} role={m.role} content={m.content} />
         ))}
@@ -113,7 +121,6 @@ export default function ProfileChat({ profile, onApply }) {
           </div>
         )}
         {error && <p className="text-sm text-red-300">{error}</p>}
-        <div ref={endRef} />
       </div>
 
       <div className="flex items-center gap-2 border-t border-[var(--color-border)] p-3">
