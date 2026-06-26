@@ -3,10 +3,9 @@ from pydantic import BaseModel, Field
 
 
 class MatchRequest(BaseModel):
-    """Body of POST /match. Profile is read from the store, not sent here."""
+    """Body of POST /match. Profile is read from the store; company isn't used."""
 
     jd: str = Field(..., min_length=1, description="The job description text.")
-    company: str = Field(default="", description="Company name (context only).")
 
 
 class MatchResult(BaseModel):

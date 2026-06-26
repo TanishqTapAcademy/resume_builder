@@ -16,13 +16,13 @@ export function useMatch() {
   const [error, setError] = useState(null)
   const reqId = useRef(0)
 
-  const checkFit = useCallback(async (jd, company) => {
+  const checkFit = useCallback(async (jd) => {
     if (!jd.trim()) return
     const my = ++reqId.current
     setStatus('checking')
     setError(null)
     try {
-      const r = await getMatch(jd, company)
+      const r = await getMatch(jd)
       if (my !== reqId.current) return // superseded by a newer check
       setResult(r)
       setStatus('done')

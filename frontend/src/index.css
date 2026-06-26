@@ -1,14 +1,18 @@
 @import 'tailwindcss';
 
-/* ── Dark developer theme tokens (FRONTEND.md design) ───────────────── */
+@custom-variant dark (&:is(.dark *));
+
+/* ── Space theme: PITCH BLACK background, blue + green accents ─────────── */
 @theme {
-  --color-ink: #0b0b12;          /* near-black app background */
-  --color-surface: #13131d;      /* panel base */
-  --color-surface-2: #1a1a27;    /* raised panel */
-  --color-border: #262636;       /* subtle borders */
-  --color-accent: #7c5cff;       /* violet accent */
-  --color-accent-soft: #a78bfa;  /* lighter violet */
-  --color-muted: #8a8aa3;        /* secondary text */
+  --color-ink: #000000;          /* pitch black — the app background */
+  --color-surface: #07090e;      /* panel base (near-black, slight blue) */
+  --color-surface-2: #0c1019;    /* raised panel */
+  --color-border: #18212f;       /* subtle borders */
+  --color-accent: #3b82f6;       /* blue */
+  --color-accent-soft: #60a5fa;  /* lighter blue */
+  --color-accent-2: #10b981;     /* emerald green */
+  --color-accent-2-soft: #34d399;/* lighter green */
+  --color-muted: #8a97ad;        /* secondary text */
   --font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
 }
 
@@ -20,27 +24,36 @@ body,
 
 body {
   margin: 0;
-  background: var(--color-ink);
-  color: #e7e7f0;
+  background: #000000; /* pitch black, not gray */
+  color: #e8edf5;
   font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  /* ambient glow: a soft violet radial bloom behind everything */
+  -webkit-font-smoothing: antialiased;
+  /* ambient cosmic bloom: blue from top-left, green from bottom-right */
   background-image:
-    radial-gradient(60% 50% at 20% 0%, rgba(124, 92, 255, 0.10), transparent 70%),
-    radial-gradient(50% 50% at 100% 100%, rgba(124, 92, 255, 0.07), transparent 70%);
+    radial-gradient(55% 45% at 12% -8%, rgba(59, 130, 246, 0.13), transparent 70%),
+    radial-gradient(50% 45% at 100% 108%, rgba(16, 185, 129, 0.11), transparent 70%);
   background-attachment: fixed;
 }
 
-/* Frosted-glass panel used by editor + preview */
+/* Frosted-glass panel (nav, cards, forms) */
 .glass {
-  background: color-mix(in srgb, var(--color-surface) 80%, transparent);
-  backdrop-filter: blur(12px);
+  background: color-mix(in srgb, var(--color-surface) 70%, transparent);
+  backdrop-filter: blur(14px);
   border: 1px solid var(--color-border);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.03) inset,
-    0 20px 50px -20px rgba(0, 0, 0, 0.6);
+    0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 20px 60px -25px rgba(0, 0, 0, 0.9);
 }
 
-/* Slim, dark scrollbars to match the theme */
+/* Blue→green wordmark / heading gradient */
+.text-gradient {
+  background: linear-gradient(100deg, #60a5fa 0%, #3b82f6 40%, #10b981 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Slim, dark scrollbars */
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--color-border) transparent;
@@ -53,3 +66,82 @@ body {
   background: var(--color-border);
   border-radius: 8px;
 }
+
+/* StarBorder (React Bits) keyframes — shipped as a v3 config comment, ported to v4 */
+@theme inline {
+  --animate-star-movement-bottom: star-movement-bottom linear infinite alternate;
+  --animate-star-movement-top: star-movement-top linear infinite alternate;
+  @keyframes star-movement-bottom {
+    0% { transform: translate(0%, 0%); opacity: 1; }
+    100% { transform: translate(-100%, 0%); opacity: 0; }
+  }
+  @keyframes star-movement-top {
+    0% { transform: translate(0%, 0%); opacity: 1; }
+    100% { transform: translate(100%, 0%); opacity: 0; }
+  }
+}
+
+@theme inline {
+  --animate-meteor: meteor 5s linear infinite;
+  @keyframes meteor {
+  0% {
+    transform: rotate(var(--angle)) translateX(0);
+    opacity: 1;
+    }
+  70% {
+    opacity: 1;
+    }
+  100% {
+    transform: rotate(var(--angle)) translateX(-500px);
+    opacity: 0;
+    }
+  }
+  --animate-shimmer-slide: shimmer-slide var(--speed) ease-in-out infinite alternate;
+  --animate-spin-around: spin-around calc(var(--speed) * 2) infinite linear
+;
+  @keyframes shimmer-slide {
+  to {
+    transform: translate(calc(100cqw - 100%), 0);
+    }
+  }
+  @keyframes spin-around {
+  0% {
+    transform: translateZ(0) rotate(0);
+    }
+  15%, 35% {
+    transform: translateZ(0) rotate(90deg);
+    }
+  65%, 85% {
+    transform: translateZ(0) rotate(270deg);
+    }
+  100% {
+    transform: translateZ(0) rotate(360deg);
+    }
+  }
+  --animate-shiny-text: shiny-text 8s infinite;
+  @keyframes shiny-text {
+  0%, 90%, 100% {
+    background-position: calc(-100% - var(--shiny-width)) 0;
+    }
+  30%, 60% {
+    background-position: calc(100% + var(--shiny-width)) 0;
+    }
+  }
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  @keyframes marquee {
+  from {
+    transform: translateX(0);
+    }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
+  @keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+    }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+    }
+  }}

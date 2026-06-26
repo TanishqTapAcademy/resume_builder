@@ -1,5 +1,5 @@
 // Generation logic lives here, not in components (FRONTEND.md §0 rules 1 & 2).
-// generate(jd, company, template) -> tracks {status, pdfUrl, warning, error}.
+// generate(jd, score) -> tracks {status, pdfUrl, warning, error}.
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 
@@ -18,13 +18,13 @@ export function useGenerate() {
   const urlRef = useRef(null)
   const reqId = useRef(0)
 
-  const generate = useCallback(async (jd, company, template) => {
+  const generate = useCallback(async (jd, score = null) => {
     const my = ++reqId.current
     setStatus('generating')
     setError(null)
     setWarning('')
     try {
-      const { blob, warning: w } = await generateResume(jd, company, template)
+      const { blob, warning: w } = await generateResume(jd, score)
       if (my !== reqId.current) return
       const url = URL.createObjectURL(blob)
       if (urlRef.current) URL.revokeObjectURL(urlRef.current)

@@ -5,3 +5,13 @@ pydantic-settings==2.14.2
 # --- AI layer (see LLM.md) ---
 openai==2.44.0       # the two LLM calls — match + generate (ai_client.py)
 pypdf==6.14.2        # read compiled PDF page count (one-page guardrail)
+
+# --- Accounts & data (multi-user) ---
+asyncpg==0.30.0          # async Postgres driver (Neon) — users/profiles/etc.
+bcrypt==4.2.1            # password hashing (never store plain text)
+PyJWT==2.10.1            # issue/verify the login JWT
+email-validator==2.2.0   # EmailStr validation on signup
+
+# --- Profile seeding ---
+pymupdf==1.26.4          # best free PDF text + hyperlink extraction (resume upload)
+python-multipart==0.0.20 # multipart parsing for the PDF upload endpoint

@@ -13,17 +13,26 @@ resume. Bounded by max_total_model_calls; terminal rules per LLM.md §4.
 """
 import json
 import logging
+from functools import lru_cache
+from pathlib import Path
 
 from app.core.config import get_settings
 from app.services.ai_client import generate_text, structured_json
 from app.services.guardrails import ats_sanitize, check_facts, count_pages
 from app.services.latex_service import compile_latex_async
-from app.services.profile_service import load_profile
 from app.utils.analytics import request_metrics
 from app.utils.edits import apply_edits
 from app.utils.errors import GenerationError, LatexCompileError
 
 logger = logging.getLogger("generation_service")
+
+_DEFAULT_TEMPLATE_PATH = Path(__file__).resolve().parent.parent / "data" / "default_template.tex"
+
+
+@lru_cache
+def default_template() -> str:
+    """The fallback LaTeX template used when a user has no template of their own."""
+    return _DEFAULT_TEMPLATE_PATH.read_text(encoding="utf-8")
 
 
 # ---- prompts --------------------------------------------------------------
@@ -203,22 +212,21 @@ async def _revise(tex: str, goal: str, profile: dict, company: str, jd: str,
 
 # ---- orchestrator ---------------------------------------------------------
 
-async def generate(jd: str, company: str, reference_template: str) -> dict:
-    """Generate a tailored, one-page, ATS-clean, grounded resume PDF.
+async def generate(profile: dict, jd: str, company: str, reference_template: str) -> dict:
+    """Generate a tailored, one-page, ATS-clean, grounded resume PDF from `profile`.
 
     Returns {pdf, tex, pages, warnings, calls}. Raises GenerationError on hard failure.
     """
     with request_metrics("/generate") as m:
-        result = await _generate_impl(jd, company, reference_template)
+        result = await _generate_impl(profile, jd, company, reference_template)
         m["pages"] = result["pages"]
         m["gpt5_calls"] = result["calls"]
         m["warnings"] = len(result["warnings"])
         return result
 
 
-async def _generate_impl(jd: str, company: str, reference_template: str) -> dict:
+async def _generate_impl(profile: dict, jd: str, company: str, reference_template: str) -> dict:
     settings = get_settings()
-    profile = load_profile()
     max_calls = settings.max_total_model_calls
 
     calls = 0

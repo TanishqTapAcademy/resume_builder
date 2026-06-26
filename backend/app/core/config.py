@@ -60,6 +60,29 @@ class Settings(BaseSettings):
     fallback_model: str = "gpt-4o-mini"  # tried if a tier's primary model keeps failing
     match_temperature: float = 0.0     # low -> stable match score (LLM.md §5)
 
+    # --- Accounts & database (multi-user) ----------------------------------
+    # Postgres connection string (Neon). Server-side ONLY, set in .env.
+    # Empty default lets the app import without a DB; DB-backed routes fail clearly.
+    database_url: str = ""
+
+    # JWT auth. Secret MUST be overridden in .env in any real deployment — the
+    # default is dev-only and clearly unsafe to ship. HS256 is symmetric (one secret).
+    jwt_secret: str = "dev-only-insecure-change-me"
+    jwt_algorithm: str = "HS256"
+    jwt_expire_minutes: int = 60 * 24 * 7  # 7 days — "stay logged in"
+
+    # --- Profile (seeding + chat) ------------------------------------------
+    # Resume PDF upload size cap (bytes) for the seeding endpoint.
+    max_pdf_bytes: int = 5_000_000
+    # Profile-chat messages allowed per user per day (cost guard). Counter in DB;
+    # conversation itself is never stored (session-only, frontend-held).
+    chat_daily_limit: int = 10
+
+    # --- Public landing demo (cost guards) ---------------------------------
+    # Resume extractions allowed per IP per day (the demo's gpt-4.1 calls). The
+    # tailored GENERATION is separately limited to one per IP for the lifetime.
+    demo_extract_daily_limit: int = 5
+
 
 @lru_cache
 def get_settings() -> Settings:

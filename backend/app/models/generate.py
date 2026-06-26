@@ -1,17 +1,13 @@
 """Generate request schema (BACKEND.md §2 — validation only, no logic)."""
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, Field
 
 
 class GenerateRequest(BaseModel):
-    """Body of POST /generate. Profile is read from the store, not sent here."""
+    """Body of POST /generate. Profile + template come from the logged-in user's store.
 
-    model_config = ConfigDict(populate_by_name=True)
+    `score` is the fit score already computed at the match step — passed back so it can be
+    saved to history WITHOUT a second AI call. Optional (null if they skipped Check fit).
+    """
 
     jd: str = Field(..., min_length=1, description="Job description text.")
-    company: str = Field(default="", description="Company name (context only).")
-    reference_template: str = Field(
-        ...,
-        min_length=1,
-        alias="referenceTemplate",
-        description="A sample LaTeX resume whose look/structure to mimic.",
-    )
+    score: int | None = Field(default=None, ge=0, le=100, description="Match score from /match.")

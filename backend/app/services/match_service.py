@@ -10,7 +10,6 @@ import logging
 
 from app.core.config import get_settings
 from app.services.ai_client import match_json
-from app.services.profile_service import load_profile
 from app.utils.analytics import request_metrics
 
 logger = logging.getLogger("match_service")
@@ -74,18 +73,17 @@ def _pick_model(system: str, user: str) -> str:
     return settings.gap_model_small
 
 
-async def match(jd: str, company: str = "") -> dict:
-    """Score the stored profile against a JD. Returns {score, fit, missing, suggestions}."""
+async def match(profile: dict, jd: str, company: str = "") -> dict:
+    """Score the given profile against a JD. Returns {score, fit, missing, suggestions}."""
     with request_metrics("/match") as m:
-        result = await _match_impl(jd, company)
+        result = await _match_impl(profile, jd, company)
         m["score"] = result["score"]
         m["fit"] = result["fit"]
         return result
 
 
-async def _match_impl(jd: str, company: str) -> dict:
+async def _match_impl(profile: dict, jd: str, company: str) -> dict:
     settings = get_settings()
-    profile = load_profile()
     user_message = _build_user_message(profile, jd, company)
 
     model = _pick_model(SYSTEM_PROMPT, user_message)
