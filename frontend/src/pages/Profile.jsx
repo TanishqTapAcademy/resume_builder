@@ -76,11 +76,13 @@ export default function Profile() {
               </button>
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+            <div className="grid items-start gap-6 lg:grid-cols-[1.4fr_1fr]">
               <div className="glass rounded-2xl p-6">
                 <ProfileView data={data} />
               </div>
-              <ProfileChat profile={data} onApply={persist} />
+              <div className="lg:sticky lg:top-6">
+                <ProfileChat profile={data} onApply={persist} />
+              </div>
             </div>
           </>
         )}
