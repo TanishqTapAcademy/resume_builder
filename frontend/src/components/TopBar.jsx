@@ -1,5 +1,7 @@
 // Top bar: brand + the two view tabs (Tailor / Advanced). Dumb component.
 
+import logo from '../assets/logo.png'
+
 const TABS = [
   { id: 'tailor', label: 'Tailor' },
   { id: 'advanced', label: 'Advanced (raw LaTeX)' },
@@ -9,9 +11,11 @@ export default function TopBar({ view, onView }) {
   return (
     <header className="flex items-center justify-between px-5 py-3 border-b border-[var(--color-border)]">
       <div className="flex items-center gap-2.5">
-        <div className="grid place-items-center w-8 h-8 rounded-lg bg-[var(--color-accent)] shadow-[0_0_20px_-2px_var(--color-accent)]">
-          <span className="text-sm font-bold text-white">R</span>
-        </div>
+        <img
+          src={logo}
+          alt="Resume Builder logo"
+          className="w-8 h-8 rounded-lg object-contain shadow-[0_0_20px_-2px_var(--color-accent)]"
+        />
         <div className="leading-tight">
           <h1 className="text-sm font-semibold tracking-tight">Resume Builder</h1>
           <p className="text-[11px] text-[var(--color-muted)]">AI · tailored to the job</p>
