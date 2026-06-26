@@ -1,0 +1,9 @@
+# Keep the image small and never bake local-only files into it.
+venv/
+__pycache__/
+*.pyc
+.env
+.env.example
+.git
+.gitignore
+tests/
