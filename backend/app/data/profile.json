@@ -1,0 +1,158 @@
+{
+  "contact": {
+    "name": "Tanishq Bhosale",
+    "location": "Bangalore",
+    "phone": "+91 6362157894",
+    "email": "bhosaletanishq4@gmail.com",
+    "linkedin": "linkedin.com/in/tanishq-bhosale",
+    "github": "github.com/TanishqBhosale"
+  },
+  "summary": "Backend Engineer with 2+ years of experience building scalable backend systems, real-time APIs, and AI-powered applications using FastAPI, PostgreSQL, and AWS. Experienced in async architectures, microservices, streaming systems, and performance optimization for production workloads. Built production LLM and agentic AI systems with real-time analytics at scale.",
+  "experience": [
+    {
+      "company": "Tap Academy",
+      "title": "Full Stack Engineer",
+      "location": "Bangalore, Karnataka",
+      "start": "March 2025",
+      "end": "Present",
+      "highlights": [
+        "Built production LLM-powered AI code assistance feature using OpenAI APIs with optimized prompt engineering, token management, and SSE streaming, serving real-time code suggestions to students.",
+        "Architected full-stack learning platform with React + FastAPI/Node.js, integrating AI-driven feedback loops for student code submissions.",
+        "Optimized PostgreSQL and MongoDB queries through indexing and query restructuring, reducing average API response time by 35%.",
+        "Implemented frontend state management with Redux and React Router for responsive, low-latency AI interactions across the platform."
+      ]
+    },
+    {
+      "company": "Quanta",
+      "title": "Software Development Engineer 1 (SD1)",
+      "location": "Bangalore, Karnataka",
+      "start": "July 2024",
+      "end": "Feb 2025",
+      "highlights": [
+        "Built scalable async FastAPI and Flask microservices for real-time synchronization and low-latency concurrent collaboration.",
+        "Designed production-grade MySQL schemas and integrated third-party APIs for scalable backend workloads.",
+        "Developed modular reusable backend services, accelerating feature delivery across multiple systems."
+      ]
+    },
+    {
+      "company": "Visionet Systems",
+      "title": "Software Developer Intern",
+      "location": "Bangalore, Karnataka",
+      "start": "Feb 2024",
+      "end": "Jul 2024",
+      "highlights": [
+        "Built reusable AWS cloud component and modular Python data-processing solutions with optimized SQL queries, improving pipeline scalability and data integrity."
+      ]
+    }
+  ],
+  "skills": {
+    "AI/ML": [
+      "LangGraph",
+      "LangChain",
+      "LLM Integration",
+      "RAG",
+      "Vector Databases (pgvector)",
+      "Agentic Workflows",
+      "Prompt Engineering",
+      "Mem0",
+      "SSE Streaming"
+    ],
+    "Languages": [
+      "Python",
+      "JavaScript",
+      "TypeScript"
+    ],
+    "Frontend": [
+      "React",
+      "React Native",
+      "Expo",
+      "Redux",
+      "Zustand",
+      "Tailwind CSS"
+    ],
+    "Backend": [
+      "FastAPI",
+      "Node.js",
+      "Flask",
+      "Prisma"
+    ],
+    "Databases": [
+      "PostgreSQL",
+      "MongoDB",
+      "MySQL",
+      "pgvector"
+    ],
+    "Cloud": [
+      "AWS",
+      "Firebase",
+      "Supabase"
+    ],
+    "Other": [
+      "RESTful APIs",
+      "WebSockets",
+      "Microservices",
+      "SQL Optimization",
+      "CI/CD"
+    ]
+  },
+  "projects": [
+    {
+      "name": "AI Fitness Coach",
+      "tech": [
+        "LangGraph",
+        "FastAPI",
+        "React Native",
+        "pgvector",
+        "OpenRouter"
+      ],
+      "date": "2025",
+      "highlights": [
+        "Built scalable backend architecture for an agentic AI fitness platform using LangGraph and FastAPI with 8 integrated domain-specific tools.",
+        "Implemented parallelized context-loading pipelines with Mem0 and pgvector, reducing first-token latency by 40%.",
+        "Developed real-time SSE streaming and server-side rate limiting for low-latency AI interactions across the mobile app."
+      ]
+    },
+    {
+      "name": "MindSnack Quiz Builder",
+      "tech": [
+        "TypeScript",
+        "Express",
+        "Prisma",
+        "PostgreSQL",
+        "React",
+        "Vite"
+      ],
+      "date": "2025",
+      "highlights": [
+        "Built scalable quiz and survey backend system with JSON-driven workflows enabling rapid no-code quiz configuration and A/B testing.",
+        "Developed Node.js/Express APIs with Prisma ORM, JWT authentication, analytics tracking, and payment lead management.",
+        "Engineered backend analytics pipelines tracking 10+ conversion events per user for funnel analysis and ad retargeting."
+      ]
+    },
+    {
+      "name": "AI Code Editor",
+      "tech": [
+        "LLM",
+        "FastAPI",
+        "React",
+        "Node.js"
+      ],
+      "date": "Aug 2024",
+      "highlights": [
+        "Built low-latency backend services for AI-powered code suggestions, debugging, and contextual completions using FastAPI and LLM APIs.",
+        "Optimized prompt-processing pipelines and caching strategies, reducing token usage per request by 30%."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Presidency University",
+      "degree": "B.Tech Computer Science & Engineering (Data Science)",
+      "location": "Bangalore, Karnataka",
+      "start": "2020",
+      "end": "2024",
+      "cgpa": "7.95"
+    }
+  ],
+  "other": []
+}

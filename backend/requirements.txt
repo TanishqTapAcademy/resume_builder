@@ -1,3 +1,7 @@
 fastapi==0.138.0
 uvicorn[standard]==0.49.0
 pydantic-settings==2.14.2
+
+# --- AI layer (see LLM.md) ---
+openai==2.44.0       # the two LLM calls — match + generate (ai_client.py)
+pypdf==6.14.2        # read compiled PDF page count (one-page guardrail)

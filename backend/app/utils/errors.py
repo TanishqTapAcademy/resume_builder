@@ -21,6 +21,19 @@ class CompileTimeoutError(LatexCompileError):
     """Raised when a compile exceeds the configured timeout."""
 
 
+class GenerationError(Exception):
+    """Raised when /generate cannot return a valid resume after the repair loop.
+
+    Carries a message + an optional log (compile error or fabrication list) so the
+    API can return a clean, actionable 422 instead of a 500.
+    """
+
+    def __init__(self, message: str, log: str = "") -> None:
+        super().__init__(message)
+        self.message = message
+        self.log = log
+
+
 def extract_error_snippet(log: str, max_lines: int = 40) -> str:
     """Pull the meaningful error lines out of a noisy LaTeX log.
 

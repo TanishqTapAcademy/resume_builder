@@ -3,6 +3,7 @@
 Pure and HTTP-agnostic: takes a string, returns bytes, raises on failure.
 Callable from a test, a CLI, or a route with zero FastAPI imports.
 """
+import asyncio
 import subprocess
 from pathlib import Path
 
@@ -81,3 +82,12 @@ def compile_latex(code: str, *, engine: str = "pdflatex") -> bytes:
             )
 
         return pdf_path.read_bytes()
+
+
+async def compile_latex_async(code: str, *, engine: str = "pdflatex") -> bytes:
+    """Async wrapper around compile_latex.
+
+    Runs the blocking subprocess in a worker thread so the event loop stays free
+    during the generation repair loop (which compiles repeatedly).
+    """
+    return await asyncio.to_thread(compile_latex, code, engine=engine)
