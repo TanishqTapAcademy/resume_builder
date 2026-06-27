@@ -42,6 +42,7 @@ const PROFILE = {
   websiteLabel: 'thetan.com',
   email: 'bhosaletanishq4@gmail.com',
   phone: '+91 6362157894',
+  githubWork: 'https://github.com/TanishqWork',
   github: 'https://github.com/TanishqBhosale',
   linkedin: 'https://www.linkedin.com/in/tanishq-bhosale/',
   summary:
@@ -285,7 +286,8 @@ export default function Contact() {
                 <ArrowUpRight size={15} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </a>
               <div className="flex gap-2">
-                <SocialLink href={PROFILE.github} icon={Github} label="GitHub" />
+                <SocialLink href={PROFILE.githubWork} icon={Github} label="GitHub (TanishqWork)" />
+                <SocialLink href={PROFILE.github} icon={Github} label="GitHub (TanishqBhosale)" />
                 <SocialLink href={PROFILE.linkedin} icon={Linkedin} label="LinkedIn" />
                 <SocialLink href={`mailto:${PROFILE.email}`} icon={Mail} label="Email" />
               </div>
@@ -508,7 +510,8 @@ export default function Contact() {
           </a>
 
           <div className="flex gap-2">
-            <SocialLink href={PROFILE.github} icon={Github} label="GitHub" />
+            <SocialLink href={PROFILE.githubWork} icon={Github} label="GitHub (TanishqWork)" />
+            <SocialLink href={PROFILE.github} icon={Github} label="GitHub (TanishqBhosale)" />
             <SocialLink href={PROFILE.linkedin} icon={Linkedin} label="LinkedIn" />
             <SocialLink href={`mailto:${PROFILE.email}`} icon={Mail} label="Email" />
           </div>

@@ -70,13 +70,22 @@ const CHANNELS = [
     note: 'More about me and my work.',
   },
   {
+    key: 'github-work',
+    icon: Github,
+    label: 'GitHub',
+    value: 'github.com/TanishqWork',
+    href: 'https://github.com/TanishqWork',
+    external: true,
+    note: 'Primary — report a bug or browse the code.',
+  },
+  {
     key: 'github',
     icon: Github,
     label: 'GitHub',
     value: 'github.com/TanishqBhosale',
     href: 'https://github.com/TanishqBhosale',
     external: true,
-    note: 'Report a bug or browse the code.',
+    note: 'Secondary profile.',
   },
   {
     key: 'linkedin',
