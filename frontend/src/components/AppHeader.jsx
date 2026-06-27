@@ -9,6 +9,7 @@ import Logo from './landing/Logo'
 const NAV = [
   { to: '/dashboard', label: 'Dashboard' },
   { to: '/profile', label: 'Profile' },
+  { to: '/support', label: 'Support' },
 ]
 
 export default function AppHeader() {

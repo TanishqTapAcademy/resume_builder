@@ -9,6 +9,7 @@ import Contact from './pages/Contact'
 import Auth from './pages/Auth'
 import Dashboard from './pages/Dashboard'
 import Profile from './pages/Profile'
+import Support from './pages/Support'
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
       <Route element={<RequireAuth />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/support" element={<Support />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
