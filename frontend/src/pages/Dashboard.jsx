@@ -14,6 +14,7 @@ import SpaceBackground from '../components/space/SpaceBackground'
 import AppHeader from '../components/AppHeader'
 import MatchResult from '../components/dashboard/MatchResult'
 import ResumePreview from '../components/dashboard/ResumePreview'
+import SupportCard from '../components/SupportCard'
 
 // A profile is "ready" only when it has the basics: a name AND at least one real
 // section (summary/experience/skills/projects/education). An empty shell doesn't count.
@@ -213,6 +214,9 @@ export default function Dashboard() {
             onFilenameChange={setFilename}
           />
         </div>
+
+        {/* Direct line to the maker for any trouble */}
+        <SupportCard className="mt-8 max-w-md" />
       </main>
     </div>
   )

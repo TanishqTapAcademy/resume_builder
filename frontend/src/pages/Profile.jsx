@@ -12,6 +12,7 @@ import ProfileSeed from '../components/profile/ProfileSeed'
 import ProfileView from '../components/profile/ProfileView'
 import ProfileChat from '../components/profile/ProfileChat'
 import RawEditor from '../components/profile/RawEditor'
+import SupportCard from '../components/SupportCard'
 
 export default function Profile() {
   const [state, setState] = useState({ status: 'loading', profile: null })
@@ -80,8 +81,9 @@ export default function Profile() {
               <div className="glass rounded-2xl p-6">
                 <ProfileView data={data} />
               </div>
-              <div className="lg:sticky lg:top-6">
+              <div className="space-y-6 lg:sticky lg:top-6">
                 <ProfileChat profile={data} onApply={persist} />
+                <SupportCard />
               </div>
             </div>
           </>
