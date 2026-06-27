@@ -5,6 +5,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 
 import RequireAuth from './components/RequireAuth'
 import Landing from './pages/Landing'
+import Contact from './pages/Contact'
 import Auth from './pages/Auth'
 import Dashboard from './pages/Dashboard'
 import Profile from './pages/Profile'
@@ -13,6 +14,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/contact" element={<Contact />} />
       <Route path="/login" element={<Auth mode="login" />} />
       <Route path="/signup" element={<Auth mode="signup" />} />
 

@@ -30,6 +30,12 @@ export default function Navbar() {
               {l.label}
             </a>
           ))}
+          <Link
+            to="/contact"
+            className="rounded-lg px-3 py-2 text-sm text-[var(--color-muted)] transition hover:text-white"
+          >
+            Contact
+          </Link>
         </div>
 
         <div className="flex items-center gap-2">
