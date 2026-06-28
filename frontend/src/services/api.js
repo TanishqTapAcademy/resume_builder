@@ -8,6 +8,7 @@ import { API_BASE_URL } from '../config'
 // app calls getMe() to confirm it's still valid (the "/me" check).
 
 const TOKEN_KEY = 'rb_token'
+const USER_KEY = 'rb_user' // cached user for instant (optimistic) boot
 
 export function getToken() {
   return localStorage.getItem(TOKEN_KEY)
@@ -17,6 +18,45 @@ export function setToken(token) {
 }
 export function clearToken() {
   localStorage.removeItem(TOKEN_KEY)
+  localStorage.removeItem(USER_KEY)
+}
+
+// Cache the last-known user so a reload can render immediately while /auth/me is
+// re-validated in the background (the backend can be slow to wake from a cold start).
+export function cacheUser(user) {
+  if (user) localStorage.setItem(USER_KEY, JSON.stringify(user))
+}
+export function getCachedUser() {
+  try {
+    return JSON.parse(localStorage.getItem(USER_KEY))
+  } catch {
+    return null
+  }
+}
+
+// Decode a JWT payload client-side (no verification — just to read claims for an
+// optimistic boot). Returns null if the token is malformed.
+function decodeJwt(token) {
+  try {
+    const payload = token.split('.')[1]
+    const json = atob(payload.replace(/-/g, '+').replace(/_/g, '/'))
+    return JSON.parse(json)
+  } catch {
+    return null
+  }
+}
+
+/** True if the token is missing, malformed, or its `exp` is in the past. */
+export function isTokenExpired(token = getToken()) {
+  const claims = token && decodeJwt(token)
+  if (!claims?.exp) return true
+  return claims.exp * 1000 <= Date.now()
+}
+
+/** A minimal user ({ id }) read straight from the token — no email, no network. */
+export function userFromToken(token = getToken()) {
+  const claims = token && decodeJwt(token)
+  return claims?.sub ? { id: claims.sub } : null
 }
 
 /** Attach the Bearer token (if present) to a fetch options object. */
