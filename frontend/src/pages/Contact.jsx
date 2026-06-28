@@ -1,6 +1,6 @@
 // Public "Contact / About me" page. A cinematic, space-themed profile card for
 // Tanishq Bhosale — hero portrait, animated skill clusters, experience & projects,
-// and a sticky CTA that redirects to the personal website (thetan.com).
+// and a sticky CTA that redirects to the personal website (thetan.in).
 
 import { Link } from 'react-router-dom'
 import { motion, useReducedMotion } from 'framer-motion'
@@ -38,8 +38,8 @@ const PROFILE = {
   name: 'Tanishq Bhosale',
   role: 'Backend & AI Engineer',
   location: 'Bangalore, India',
-  website: 'https://thetan.com',
-  websiteLabel: 'thetan.com',
+  website: 'https://thetan.in',
+  websiteLabel: 'thetan.in',
   email: 'bhosaletanishq4@gmail.com',
   phone: '+91 6362157894',
   githubWork: 'https://github.com/TanishqWork',
