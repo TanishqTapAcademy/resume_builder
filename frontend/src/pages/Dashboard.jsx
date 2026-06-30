@@ -119,15 +119,17 @@ export default function Dashboard() {
         )}
 
         {editMode && gen.status === 'success' ? (
-          /* Edit mode: preview on the left, chat + collapsible context on the right */
-          <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-stretch">
+          /* Edit mode: two viewport-height panes, each scrolling INTERNALLY and independently.
+             Both columns stretch to the same height (grid default align: stretch). */
+          <div className="grid gap-6 lg:h-[calc(100vh-13rem)] lg:min-h-[34rem] lg:grid-cols-[1.1fr_0.9fr]">
             <ResumePreview
               gen={gen}
               onDownload={handleDownload}
               filename={filename}
               onFilenameChange={setFilename}
+              fill
             />
-            <div className="flex min-h-0 flex-col gap-4">
+            <div className="flex h-full min-h-0 flex-col gap-4">
               <EditContextPanel jd={jd} score={score} onExit={() => setEditMode(false)} />
               <ResumeChat chat={chat} onSend={(text) => chat.send(text, gen.tex, jd)} />
             </div>

@@ -7,12 +7,21 @@ import { Download, FileText, AlertTriangle, ChevronDown, Pencil } from 'lucide-r
 
 import GeneratingLoader from './GeneratingLoader'
 
-export default function ResumePreview({ gen, onDownload, onEdit, filename, onFilenameChange }) {
+export default function ResumePreview({
+  gen,
+  onDownload,
+  onEdit,
+  filename,
+  onFilenameChange,
+  fill = false, // fill: stretch to the column height + scroll the PDF internally (edit mode)
+}) {
   const [showLog, setShowLog] = useState(false)
   const success = gen.status === 'success'
 
   return (
-    <div className="glass flex flex-col overflow-hidden rounded-2xl">
+    <div
+      className={`glass flex flex-col overflow-hidden rounded-2xl ${fill ? 'h-full min-h-0' : ''}`}
+    >
       <div className="flex items-center justify-between gap-3 border-b border-[var(--color-border)] px-4 py-3">
         {success ? (
           // Editable filename — click to rename; used as the download name.
@@ -56,8 +65,13 @@ export default function ResumePreview({ gen, onDownload, onEdit, filename, onFil
         )}
       </div>
 
-      {/* Page-shaped viewport: full one-pager always visible; 2 pages scroll inside. */}
-      <div className="relative aspect-[8.5/11] w-full bg-black/20">
+      {/* Viewport. Normal: page-shaped (8.5×11). Edit mode (fill): fills the column height
+          and the PDF scrolls inside its own box, independent of the chat. */}
+      <div
+        className={`relative w-full bg-black/20 ${
+          fill ? 'min-h-0 flex-1' : 'aspect-[8.5/11]'
+        }`}
+      >
         {gen.status === 'idle' && (
           <Centered>
             <FileText className="mb-3 h-10 w-10 text-[var(--color-muted)]" />

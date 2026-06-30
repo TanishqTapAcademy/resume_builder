@@ -55,9 +55,15 @@ _EDIT_SYSTEM = """You revise ONE section of an existing LaTeX resume by returnin
 list of edits, NOT a new section.
 
 Each edit:
-  - "find": an EXACT substring of the SECTION below, copied verbatim (every brace and
-    backslash), long and specific enough to occur EXACTLY ONCE.
+  - "find": a COMPLETE, specific substring of the SECTION below, copied verbatim (every
+    brace and backslash). Copy a whole token or phrase — NEVER a tiny fragment like a bare
+    number or single letter that also occurs inside other text. (To change "04" in an email,
+    "find" the FULL email address, not "04" — "04" also appears inside years like 2024.)
   - "replace": the replacement text ("" to delete).
+  - "all": set true ONLY when that exact string legitimately appears more than once and every
+    copy must change together — e.g. an email or URL that appears in BOTH the \\href link
+    target and the visible label. Otherwise false. (Emails and links almost always need
+    "all": true so the clickable link and the shown text stay in sync.)
 
 Rules:
 - Do ONLY what the instruction asks. Change nothing else.
@@ -66,7 +72,7 @@ Rules:
 - Keep it compilable and ATS-safe: plain ASCII only (no smart quotes, no em-dashes).
 - Make the SMALLEST set of edits that satisfies the instruction.
 
-Return JSON: { "edits": [ { "find": "...", "replace": "..." } ] }."""
+Return JSON: { "edits": [ { "find": "...", "replace": "...", "all": false } ] }."""
 
 _EDITS_SCHEMA = {
     "type": "object",
@@ -75,8 +81,15 @@ _EDITS_SCHEMA = {
             "type": "array",
             "items": {
                 "type": "object",
-                "properties": {"find": {"type": "string"}, "replace": {"type": "string"}},
-                "required": ["find", "replace"],
+                "properties": {
+                    "find": {"type": "string"},
+                    "replace": {"type": "string"},
+                    "all": {
+                        "type": ["boolean", "null"],
+                        "description": "true = replace every occurrence of find (for emails/links shown twice)",
+                    },
+                },
+                "required": ["find", "replace", "all"],
                 "additionalProperties": False,
             },
         }
