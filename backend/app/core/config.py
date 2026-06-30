@@ -34,6 +34,7 @@ class Settings(BaseSettings):
 
     # Model names per tier (LLM.md §2). Names live here, never in logic.
     gen_model: str = "gpt-5"        # flagship: full resume generation + self-repair
+    edit_model: str = "gpt-4.1"     # fast tier for post-gen, section-scoped chat edits
 
     # Match tier picks a model by input size (LLM.md §5): small/easy inputs use the
     # fast mini; large inputs use the full model for better long-context accuracy.

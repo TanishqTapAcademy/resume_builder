@@ -8,7 +8,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes import auth, compile, demo, generate, health, match, profile
+from app.api.routes import auth, compile, demo, generate, health, match, profile, resume
 from app.core.config import get_settings
 from app.db.database import close_db, init_db
 
@@ -47,4 +47,5 @@ app.include_router(compile.router)
 app.include_router(profile.router)
 app.include_router(match.router)
 app.include_router(generate.router)
+app.include_router(resume.router)
 app.include_router(demo.router)

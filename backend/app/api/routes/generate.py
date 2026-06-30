@@ -4,11 +4,12 @@ Loads the logged-in user's profile + their stored LaTeX template (or the default
 the generation + repair loop, records a minimal history row, and returns the PDF (or a
 clean error). Async — it awaits model calls and compiles.
 """
+import base64
+
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.responses import Response
 
 from app.api.deps import get_current_user
-from app.models.generate import GenerateRequest
+from app.models.generate import GenerateRequest, GenerateResponse
 from app.services import profile_repo, resume_repo
 from app.services.ai_client import AIClientError
 from app.services.generation_service import default_template, generate
@@ -19,15 +20,19 @@ router = APIRouter(tags=["generate"])
 
 @router.post(
     "/generate",
+    response_model=GenerateResponse,
     responses={
-        200: {"content": {"application/pdf": {}}, "description": "Tailored resume PDF"},
         422: {"description": "Generation failed (won't compile or fabrication persists)"},
     },
 )
 async def generate_endpoint(
     request: GenerateRequest, user: dict = Depends(get_current_user)
-) -> Response:
-    """Generate a tailored, one-page, ATS-clean, grounded resume for the current user."""
+) -> GenerateResponse:
+    """Generate a tailored, one-page, ATS-clean, grounded resume for the current user.
+
+    Returns JSON: the base64 PDF plus the LaTeX source, so the client can hold the source in
+    session memory and drive the post-generation chat editor without re-fetching it.
+    """
     profile = await profile_repo.get_profile(user["id"])
     if profile is None:
         raise HTTPException(status_code=409, detail="Set up your profile first.")
@@ -45,7 +50,8 @@ async def generate_endpoint(
     # History: reuse the score from the match step (no recompute). Best-effort.
     await resume_repo.record_resume(user["id"], "", request.score)
 
-    headers = {"Content-Disposition": 'inline; filename="resume.pdf"'}
-    if result["warnings"]:
-        headers["X-Resume-Warning"] = " | ".join(result["warnings"])
-    return Response(content=result["pdf"], media_type="application/pdf", headers=headers)
+    return GenerateResponse(
+        pdf=base64.b64encode(result["pdf"]).decode("ascii"),
+        tex=result["tex"],
+        warning=" | ".join(result["warnings"]) if result["warnings"] else "",
+    )

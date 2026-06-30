@@ -10,10 +10,13 @@ import { getProfile } from '../services/api'
 import { WEAK_FLOOR } from '../config'
 import { useMatch } from '../hooks/useMatch'
 import { useGenerate } from '../hooks/useGenerate'
+import { useResumeChat } from '../hooks/useResumeChat'
 import SpaceBackground from '../components/space/SpaceBackground'
 import AppHeader from '../components/AppHeader'
 import MatchResult from '../components/dashboard/MatchResult'
 import ResumePreview from '../components/dashboard/ResumePreview'
+import ResumeChat from '../components/dashboard/ResumeChat'
+import EditContextPanel from '../components/dashboard/EditContextPanel'
 
 // A profile is "ready" only when it has the basics: a name AND at least one real
 // section (summary/experience/skills/projects/education). An empty shell doesn't count.
@@ -37,9 +40,11 @@ export default function Dashboard() {
   const [hasProfile, setHasProfile] = useState(null) // null = checking
   const [checkedKey, setCheckedKey] = useState(null) // which jd the score is for
   const [filename, setFilename] = useState('resume') // editable download name
+  const [editMode, setEditMode] = useState(false) // post-generation chat editor open?
 
   const match = useMatch()
   const gen = useGenerate()
+  const chat = useResumeChat({ applyEditedResult: gen.applyEditedResult })
 
   useEffect(() => {
     getProfile()
@@ -113,6 +118,21 @@ export default function Dashboard() {
           </div>
         )}
 
+        {editMode && gen.status === 'success' ? (
+          /* Edit mode: preview on the left, chat + collapsible context on the right */
+          <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-stretch">
+            <ResumePreview
+              gen={gen}
+              onDownload={handleDownload}
+              filename={filename}
+              onFilenameChange={setFilename}
+            />
+            <div className="flex min-h-0 flex-col gap-4">
+              <EditContextPanel jd={jd} score={score} onExit={() => setEditMode(false)} />
+              <ResumeChat chat={chat} onSend={(text) => chat.send(text, gen.tex, jd)} />
+            </div>
+          </div>
+        ) : (
         <div className="grid gap-6 lg:grid-cols-[1fr_1.1fr]">
           {/* Left: form + match */}
           <div className="space-y-5">
@@ -152,7 +172,11 @@ export default function Dashboard() {
               {showGenerate && (
                 <div className="flex flex-wrap gap-3">
                   <button
-                    onClick={() => gen.generate(jd, score)}
+                    onClick={() => {
+                      setEditMode(false)
+                      chat.reset()
+                      gen.generate(jd, score)
+                    }}
                     disabled={!canGenerate}
                     className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-emerald-500 px-5 py-3 text-sm font-semibold text-white shadow-[0_0_34px_-6px_rgba(59,130,246,0.8)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
                   >
@@ -209,10 +233,12 @@ export default function Dashboard() {
           <ResumePreview
             gen={gen}
             onDownload={handleDownload}
+            onEdit={gen.status === 'success' ? () => setEditMode(true) : null}
             filename={filename}
             onFilenameChange={setFilename}
           />
         </div>
+        )}
       </main>
     </div>
   )

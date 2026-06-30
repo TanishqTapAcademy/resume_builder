@@ -390,10 +390,17 @@ export async function getMatch(jd) {
   throw new Error(`Unexpected server error (HTTP ${res.status}).`)
 }
 
+// Decode a base64 PDF (from the JSON generate/edit responses) into a Blob.
+function pdfBlobFromB64(b64) {
+  const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0))
+  return new Blob([bytes], { type: 'application/pdf' })
+}
+
 /**
  * Generate a tailored resume for the logged-in user (profile + template are server-side).
  * `score` is the fit score from the prior match step, stored to history (no recompute).
- * @returns {Promise<{blob: Blob, warning: string}>} the PDF and any warning header
+ * Returns the PDF blob AND the LaTeX source (held in session memory for the chat editor).
+ * @returns {Promise<{blob: Blob, tex: string, warning: string}>}
  * @throws {GenerationError} on a hard failure (carries the log)
  */
 export async function generateResume(jd, score = null) {
@@ -409,8 +416,8 @@ export async function generateResume(jd, score = null) {
   }
 
   if (res.ok) {
-    const blob = await res.blob()
-    return { blob, warning: res.headers.get('X-Resume-Warning') ?? '' }
+    const data = await res.json()
+    return { blob: pdfBlobFromB64(data.pdf), tex: data.tex ?? '', warning: data.warning ?? '' }
   }
 
   if (res.status === 409) {
@@ -425,6 +432,47 @@ export async function generateResume(jd, score = null) {
     }
     throw new GenerationError(detail.message ?? 'Generation failed.', detail.log ?? '')
   }
+  if (res.status === 503) {
+    throw new Error('AI service unavailable — is OPENAI_API_KEY set on the backend?')
+  }
+  throw new Error(`Unexpected server error (HTTP ${res.status}).`)
+}
+
+/**
+ * Apply one natural-language edit to a generated resume's LaTeX, scoped to the section it
+ * targets (the backend auto-detects the section and only edits that, to save tokens).
+ * The source is sent each call (session memory) — the server is stateless.
+ *
+ * @param {string} tex - current LaTeX source
+ * @param {string} message - the edit instruction
+ * @param {string} jd - target job description (context only)
+ * @returns {Promise<{ok:boolean, reply:string, section:string, tex:string, blob:Blob|null, warning:string}>}
+ */
+export async function editResume(tex, message, jd = '') {
+  let res
+  try {
+    res = await fetch(`${API_BASE_URL}/resume/edit`, {
+      method: 'POST',
+      headers: authHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify({ tex, message, jd }),
+    })
+  } catch {
+    throw new Error(UNREACHABLE)
+  }
+
+  if (res.ok) {
+    const d = await res.json()
+    return {
+      ok: d.ok,
+      reply: d.reply,
+      section: d.section ?? '',
+      tex: d.tex,
+      blob: d.pdf ? pdfBlobFromB64(d.pdf) : null,
+      warning: d.warning ?? '',
+    }
+  }
+
+  if (res.status === 409) throw new Error('Set up your profile first.')
   if (res.status === 503) {
     throw new Error('AI service unavailable — is OPENAI_API_KEY set on the backend?')
   }

@@ -3,9 +3,11 @@
 // a full one-page resume always fits at any width; a 2-page result scrolls inside it.
 
 import { useState } from 'react'
-import { Loader2, Download, FileText, AlertTriangle, ChevronDown, Pencil } from 'lucide-react'
+import { Download, FileText, AlertTriangle, ChevronDown, Pencil } from 'lucide-react'
 
-export default function ResumePreview({ gen, onDownload, filename, onFilenameChange }) {
+import GeneratingLoader from './GeneratingLoader'
+
+export default function ResumePreview({ gen, onDownload, onEdit, filename, onFilenameChange }) {
   const [showLog, setShowLog] = useState(false)
   const success = gen.status === 'success'
 
@@ -35,12 +37,22 @@ export default function ResumePreview({ gen, onDownload, filename, onFilenameCha
           </span>
         )}
         {success && (
-          <button
-            onClick={onDownload}
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-gradient-to-r from-blue-500 to-emerald-500 px-3 py-1.5 text-sm font-semibold text-white transition hover:brightness-110"
-          >
-            <Download className="h-4 w-4" /> Download
-          </button>
+          <div className="flex shrink-0 items-center gap-2">
+            {onEdit && (
+              <button
+                onClick={onEdit}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--color-border)] px-3 py-1.5 text-sm font-medium text-white/90 transition hover:bg-white/5"
+              >
+                <Pencil className="h-4 w-4" /> Edit
+              </button>
+            )}
+            <button
+              onClick={onDownload}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-blue-500 to-emerald-500 px-3 py-1.5 text-sm font-semibold text-white transition hover:brightness-110"
+            >
+              <Download className="h-4 w-4" /> Download
+            </button>
+          </div>
         )}
       </div>
 
@@ -55,15 +67,7 @@ export default function ResumePreview({ gen, onDownload, filename, onFilenameCha
           </Centered>
         )}
 
-        {gen.status === 'generating' && (
-          <Centered>
-            <Loader2 className="mb-3 h-8 w-8 animate-spin text-emerald-300" />
-            <p className="text-sm text-white">Tailoring your resume…</p>
-            <p className="mt-1 text-xs text-[var(--color-muted)]">
-              Writing, compiling, and checking it fits one page. This can take a moment.
-            </p>
-          </Centered>
-        )}
+        {gen.status === 'generating' && <GeneratingLoader />}
 
         {gen.status === 'success' && (
           // #toolbar=0&navpanes=0 hides the viewer chrome; view=FitH fits page width.
